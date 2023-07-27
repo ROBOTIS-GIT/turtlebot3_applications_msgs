@@ -1,7 +1,7 @@
 ########################################
 # Messages
 ########################################
-Header  header
+std_msgs/Header header
 string  pano_id
 float64 latitude
 float64 longitude
