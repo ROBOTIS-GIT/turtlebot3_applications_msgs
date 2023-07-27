@@ -1,61 +1,44 @@
 ################################################################################
 # Set minimum required version of cmake, project name and compile options
 ################################################################################
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(turtlebot3_applications_msgs)
 
+#C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+endif()
 ################################################################################
 # Find catkin packages and libraries for catkin and system dependencies
 ################################################################################
-find_package(catkin REQUIRED COMPONENTS
-  std_msgs
-  sensor_msgs
-  message_generation
-)
-
-################################################################################
-# Setup for python modules and scripts
-################################################################################
+find_package(ament_cmake REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
 ################################################################################
 # Declare ROS messages, services and actions
 ################################################################################
-add_message_files(
-  FILES
-  PanoramaImg.msg
-)
+set(msg_files
+  "msg/PanoramaImg.msg")
 
-add_service_files(
-  FILES
-  TakePanorama.srv
-  SetFollowState.srv
-)
+set(srv_files
+  "srv/SetFollowState.srv"
+  "srv/TakePanorama.srv")
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  sensor_msgs
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
+  ${srv_files}
+  DEPENDENCIES builtin_interfaces std_msgs sensor_msgs
+  ADD_LINTER_TESTS
 )
 
 ################################################################################
-# Declare ROS dynamic reconfigure parameters
+# Macro for ament package
 ################################################################################
-
-################################################################################
-# Declare catkin specific configuration to be passed to dependent projects
-################################################################################
-catkin_package(
-  CATKIN_DEPENDS std_msgs sensor_msgs message_runtime
-)
-
-################################################################################
-# Build
-################################################################################
-
-################################################################################
-# Install
-################################################################################
-
-################################################################################
-# Test
-################################################################################
+ament_export_dependencies(rosidl_default_runtime)
+ament_package()
